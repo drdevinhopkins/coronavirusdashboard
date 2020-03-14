@@ -39,6 +39,7 @@ exports.newScreenTrigger = functions.firestore
             var data = {};
             data['totalCount'] = newTotalCount;
 
+
             return jghStats.update(data);
 
         }).catch(err => console.log(err))

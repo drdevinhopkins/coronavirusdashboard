@@ -5,10 +5,13 @@ import 'DatabaseService.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase/firestore.dart';
 
+import 'UserRepository.dart';
+
 class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DatabaseService _data = Provider.of<DatabaseService>(context);
+    UserRepository _user = Provider.of<UserRepository>(context);
 
     var isLargeScreen;
     var screenWidth = MediaQuery.of(context).size.width;
@@ -21,42 +24,42 @@ class DashboardScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: isLargeScreen
-            ? Text('JGH ED - Coronavirus Screening Dashboard')
-            : Text('Dashboard'),
-        centerTitle: true,
-        actions: <Widget>[
-          isLargeScreen
-              ? Text(' ')
-              : FlatButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/feed');
-                  },
-                  child: Icon(
-                    Icons.rss_feed,
-                    color: Colors.white,
+        appBar: AppBar(
+          title: Text(
+            _user.locations[_user.chosenLocation],
+          ),
+          centerTitle: true,
+          actions: <Widget>[
+            isLargeScreen
+                ? Text(' ')
+                : FlatButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/feed');
+                    },
+                    child: Icon(
+                      Icons.rss_feed,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-        ],
-      ),
-      body: isLargeScreen
-          ? Row(
-              children: <Widget>[
-                Expanded(
-                  flex: 2,
-                  child: _buildLargeDataBreakdown(
-                      context, _data.getAllScreenings()),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: _buildScreeningStream(
-                      context, _data.getLast10ScreeningsStream()),
-                )
-              ],
-            )
-          : _buildSmallDataBreakdown(context, _data.getAllScreenings()),
-    );
+          ],
+        ),
+        body: isLargeScreen
+            ? Row(
+                children: <Widget>[
+                  Expanded(
+                    flex: 2,
+                    child: _buildLargeDataBreakdown(
+                        context, _data.getAllScreenings(_user.chosenLocation)),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: _buildScreeningStream(context,
+                        _data.getLast10ScreeningsStream(_user.chosenLocation)),
+                  )
+                ],
+              )
+            : _buildSmallDataBreakdown(
+                context, _data.getAllScreenings(_user.chosenLocation)));
   }
 }
 

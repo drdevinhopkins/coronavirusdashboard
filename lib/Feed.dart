@@ -2,16 +2,21 @@ import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';
 import 'package:firebase/firestore.dart';
 import 'package:firebase/firebase.dart';
+import 'package:provider/provider.dart';
+
+import 'UserRepository.dart';
 
 class Feed extends StatelessWidget {
-  final Stream<QuerySnapshot> jghStream = firestore()
-      .collection('jgh-ed')
-      .orderBy('timestamp', 'desc')
-      .limit(10)
-      .onSnapshot;
+  // final Stream<QuerySnapshot> jghStream = firestore()
+  //     .collection('jgh-ed')
+  //     .orderBy('timestamp', 'desc')
+  //     .limit(10)
+  //     .onSnapshot;
   @override
   Widget build(BuildContext context) {
     // DatabaseService _data = Provider.of<DatabaseService>(context);
+
+    UserRepository _user = Provider.of<UserRepository>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Screening Feed'),
@@ -20,7 +25,12 @@ class Feed extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: StreamBuilder(
-          stream: jghStream,
+          // stream: jghStream,
+          stream: firestore()
+              .collection(_user.chosenLocation)
+              .orderBy('timestamp', 'desc')
+              .limit(10)
+              .onSnapshot,
           builder: (BuildContext context,
               AsyncSnapshot<QuerySnapshot> streamSnapshot) {
             if (streamSnapshot.hasError)

@@ -1,12 +1,14 @@
-import 'package:coronavirusdashboard/DatabaseService.dart';
 import 'package:flutter/material.dart';
 // import 'package:provider/provider.dart';
 import 'package:firebase/firestore.dart';
 import 'package:firebase/firebase.dart';
 
 class Feed extends StatelessWidget {
-  final Stream<QuerySnapshot> jghStream =
-      firestore().collection('jgh-ed').orderBy('timestamp', 'desc').onSnapshot;
+  final Stream<QuerySnapshot> jghStream = firestore()
+      .collection('jgh-ed')
+      .orderBy('timestamp', 'desc')
+      .limit(10)
+      .onSnapshot;
   @override
   Widget build(BuildContext context) {
     // DatabaseService _data = Provider.of<DatabaseService>(context);
